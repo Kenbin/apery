@@ -528,8 +528,8 @@ void Thread::search() {
             if (row[(rootDepth / OnePly + rootPos.gamePly()) % row.size()])
                 continue;
         }
-
-        if (mainThread) {
+        else
+        {
             mainThread->bestMoveChanges *= 0.505;
             mainThread->failedLow = false;
         }
@@ -873,71 +873,73 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
 
     // step8
     // null move
-    if (!PVNode
-        && eval >= beta
-        && (ss->staticEval >= beta - 35 * (depth / OnePly - 6) || depth >= 13 * OnePly))
+
+    if (!PVNode)
     {
-        ss->currentMove = Move::moveNull();
-        ss->counterMoves = nullptr;
+	    if (eval >= beta
+	        && (ss->staticEval >= beta - 35 * (depth / OnePly - 6) || depth >= 13 * OnePly))
+	    {
+	        ss->currentMove = Move::moveNull();
+	        ss->counterMoves = nullptr;
 
-        assert(eval - beta >= 0);
+	        assert(eval - beta >= 0);
 
-        const Depth R = ((823 + 67 * depth / OnePly) / 256 + std::min((eval - beta) / PawnScore, 3)) * OnePly;
+	        const Depth R = ((823 + 67 * depth / OnePly) / 256 + std::min((eval - beta) / PawnScore, 3)) * OnePly;
 
-        pos.doNullMove<true>(st);
-        (ss+1)->skipEarlyPruning = true;
-        (ss+1)->staticEvalRaw = (ss)->staticEvalRaw; // 評価値の差分評価の為。
-        Score nullScore = (depth-R < OnePly ?
-                           -qsearch<NonPV, false>(pos, ss+1, -beta, -beta+1, Depth0)
-                           : -search<NonPV>(pos, ss+1, -beta, -beta+1, depth-R, !cutNode));
-        (ss+1)->skipEarlyPruning = false;
-        pos.doNullMove<false>(st);
+	        pos.doNullMove<true>(st);
+	        (ss+1)->skipEarlyPruning = true;
+	        (ss+1)->staticEvalRaw = (ss)->staticEvalRaw; // 評価値の差分評価の為。
+	        Score nullScore = (depth-R < OnePly ?
+	                           -qsearch<NonPV, false>(pos, ss+1, -beta, -beta+1, Depth0)
+	                           : -search<NonPV>(pos, ss+1, -beta, -beta+1, depth-R, !cutNode));
+	        (ss+1)->skipEarlyPruning = false;
+	        pos.doNullMove<false>(st);
 
-        if (nullScore >= beta) {
-            if (nullScore >= ScoreMateInMaxPly)
-                nullScore = beta;
+	        if (nullScore >= beta) {
+	            if (nullScore >= ScoreMateInMaxPly)
+	                nullScore = beta;
 
-            if (depth < 12 * OnePly && abs(beta) < ScoreKnownWin)
-                return nullScore;
+	            if (depth < 12 * OnePly && abs(beta) < ScoreKnownWin)
+	                return nullScore;
 
-            ss->skipEarlyPruning = true;
-            const Score s = (depth-R < OnePly ?
-                             qsearch<NonPV, false>(pos, ss, beta-1, beta, Depth0)
-                             : search<NonPV>(pos, ss, beta-1, beta, depth-R, false));
-            ss->skipEarlyPruning = false;
+	            ss->skipEarlyPruning = true;
+	            const Score s = (depth-R < OnePly ?
+	                             qsearch<NonPV, false>(pos, ss, beta-1, beta, Depth0)
+	                             : search<NonPV>(pos, ss, beta-1, beta, depth-R, false));
+	            ss->skipEarlyPruning = false;
 
-            if (s >= beta)
-                return nullScore;
-        }
-    }
+	            if (s >= beta)
+	                return nullScore;
+	        }
+	    }
 
-    // step9
-    // probcut
-    if (!PVNode
-        && depth >= 5 * OnePly
-        && abs(beta) < ScoreMateInMaxPly)
-    {
-        const Score rbeta = std::min(beta + 200, ScoreInfinite);
-        const Depth rdepth = depth - 4 * OnePly;
+	    // step9
+	    // probcut
+	    if (depth >= 5 * OnePly
+	        && abs(beta) < ScoreMateInMaxPly)
+	    {
+	        const Score rbeta = std::min(beta + 200, ScoreInfinite);
+	        const Depth rdepth = depth - 4 * OnePly;
 
-        assert(rdepth >= OnePly);
-        assert((ss-1)->currentMove != Move::moveNone());
-        assert((ss-1)->currentMove != Move::moveNull());
+	        assert(rdepth >= OnePly);
+	        assert((ss-1)->currentMove != Move::moveNone());
+	        assert((ss-1)->currentMove != Move::moveNull());
 
-        MovePicker mp(pos, ttMove, rbeta - ss->staticEval);
-        const CheckInfo ci(pos);
-        while ((move = mp.nextMove()) != Move::moveNone()) {
-            if (pos.pseudoLegalMoveIsLegal<false, false>(move, ci.pinned)) {
-                ss->currentMove = move;
-                ss->counterMoves = &thisThread->counterMoveHistory[pos.movedPiece(move)][move.to()];
-                pos.doMove(move, st, ci, pos.moveGivesCheck(move, ci));
-                (ss+1)->staticEvalRaw.p[0][0] = ScoreNotEvaluated;
-                score = -search<NonPV>(pos, ss+1, -rbeta, -rbeta+1, rdepth, !cutNode);
-                pos.undoMove(move);
-                if (score >= rbeta)
-                    return score;
-            }
-        }
+	        MovePicker mp(pos, ttMove, rbeta - ss->staticEval);
+	        const CheckInfo ci(pos);
+	        while ((move = mp.nextMove()) != Move::moveNone()) {
+	            if (pos.pseudoLegalMoveIsLegal<false, false>(move, ci.pinned)) {
+	                ss->currentMove = move;
+	                ss->counterMoves = &thisThread->counterMoveHistory[pos.movedPiece(move)][move.to()];
+	                pos.doMove(move, st, ci, pos.moveGivesCheck(move, ci));
+	                (ss+1)->staticEvalRaw.p[0][0] = ScoreNotEvaluated;
+	                score = -search<NonPV>(pos, ss+1, -rbeta, -rbeta+1, rdepth, !cutNode);
+	                pos.undoMove(move);
+	                if (score >= rbeta)
+	                    return score;
+	            }
+	        }
+	    }
     }
 
     // step10
@@ -1142,7 +1144,7 @@ movesLoop:
         // step17
         pos.undoMove(move);
 
-        assert(-ScoreInfinite < score && score < ScoreInfinite);
+        //assert(-ScoreInfinite < score && score < ScoreInfinite);
 
         // step18
         if (signals.stop.load(std::memory_order_relaxed))
@@ -1193,9 +1195,9 @@ movesLoop:
 
         if (!captureOrPawnPromotion && move != bestMove && quietCount < 64)
             quietsSearched[quietCount++] = move;
-    }
+    }	//loop
 
-    assert(moveCount || !inCheck || excludedMove || !MoveList<Legal>(pos).size());
+    //assert(moveCount || !inCheck || excludedMove || !MoveList<Legal>(pos).size());
 
     // step20
     if (moveCount == 0)
@@ -1287,9 +1289,12 @@ void RootMove::extractPVFromTT(Position& pos) {
 }
 
 void initSearchTable() {
-    for (int improving = 0; improving < 2; ++improving) {
-        for (int d = 1; d < 64; d++) {
-            for (int mc = 1; mc < 64; mc++) {
+
+    int improving, d, mc;
+
+    for (improving = 0; improving < 2; ++improving) {
+        for (d = 1; d < 64; d++) {
+            for (mc = 1; mc < 64; mc++) {
                 const double r = log(d) * log(mc) / 2;
                 if (r < 0.80)
                     continue;
@@ -1303,7 +1308,7 @@ void initSearchTable() {
         }
     }
 
-    for (int d = 0; d < 16; ++d) {
+    for (d = 0; d < 16; ++d) {
         FutilityMoveCounts[0][d] = int(2.4 + 0.773 * pow(d + 0.00, 1.8));
         FutilityMoveCounts[1][d] = int(2.9 + 1.045 * pow(d + 0.49, 1.8));
     }
