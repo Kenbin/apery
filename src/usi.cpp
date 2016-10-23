@@ -108,6 +108,9 @@ void OptionsMap::init(Searcher* s) {
     (*this)["Move_Overhead"]               = USIOption(30, 0, 5000);
     (*this)["Minimum_Thinking_Time"]       = USIOption(20, 0, INT_MAX);
     (*this)["Threads"]                     = USIOption(cpuCoreCount(), 1, MaxThreads, onThreads, s);
+    (*this)["PV_Margin"]                   = USIOption(0, 0, 200);
+    (*this)["Max_Depth"]                   = USIOption(0, 0, 200);	//0だとリミットなし
+
 #ifdef NDEBUG
     (*this)["Engine_Name"]                 = USIOption("Apery");
 #else
@@ -192,7 +195,10 @@ void go(const Position& pos, std::istringstream& ssCmd) {
                 limits.searchmoves.push_back(usiToMove(pos, token));
         }
     }
-    if      (limits.moveTime != 0)
+    //UIの最大探索深さを優先する。主に将棋GUIでの検討時の挙動対応
+    if (!limits.depth && 0 < pos.searcher()->options["Max_Depth"])
+        limits.depth = pos.searcher()->options["Max_Depth"];
+    if (limits.moveTime != 0)
         limits.moveTime -= pos.searcher()->options["Byoyomi_Margin"];
     else if (pos.searcher()->options["Time_Margin"] != 0)
         limits.time[pos.turn()] -= pos.searcher()->options["Time_Margin"];

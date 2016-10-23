@@ -515,6 +515,8 @@ void Thread::search() {
     Move easyMove = Move::moveNone();
     MainThread* mainThread = (this == searcher->threads.main() ? searcher->threads.main() : nullptr);
     int lastInfoTime = -1; // 将棋所のコンソールが詰まる問題への対処用
+    const int pv_margin = searcher->options["PV_Margin"];	 // PVの出力間隔[ms]
+    const bool max_depth = searcher->options["Max_Depth"] ? true : false;
 
     memset(ss-5, 0, 8 * sizeof(SearchStack));
     completedDepth = Depth0;
@@ -585,7 +587,10 @@ void Thread::search() {
                     && (bestScore <= alpha || beta <= bestScore)
                     && searcher->timeManager.elapsed() > 3000
                     // 将棋所のコンソールが詰まるのを防ぐ。
-                    && (rootDepth < 10 * OnePly || lastInfoTime + 200 < searcher->timeManager.elapsed()))
+                    && (rootDepth < 10 * OnePly
+                       || lastInfoTime + pv_margin < searcher->timeManager.elapsed())
+                       || rootDepth == searcher->limits.depth
+                       || max_depth)
                 {
                     lastInfoTime = searcher->timeManager.elapsed();
                     SYNCCOUT << pvInfoToUSI(rootPos, multiPV, rootDepth, alpha, beta) << SYNCENDL;
@@ -620,7 +625,10 @@ void Thread::search() {
                          << " time " << searcher->timeManager.elapsed() << SYNCENDL;
             else if ((pvIdx + 1 == multiPV || searcher->timeManager.elapsed() > 3000)
                      // 将棋所のコンソールが詰まるのを防ぐ。
-                     && (rootDepth < 10 * OnePly || lastInfoTime + 200 < searcher->timeManager.elapsed()))
+                     && (rootDepth < 10 * OnePly
+                         || lastInfoTime + pv_margin < searcher->timeManager.elapsed())
+                         || rootDepth == searcher->limits.depth
+                         || max_depth)
             {
                 lastInfoTime = searcher->timeManager.elapsed();
                 SYNCCOUT << pvInfoToUSI(rootPos, multiPV, rootDepth, alpha, beta) << SYNCENDL;
