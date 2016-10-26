@@ -108,11 +108,11 @@ void OptionsMap::init(Searcher* s) {
     (*this)["Move_Overhead"]               = USIOption(30, 0, 5000);
     (*this)["Minimum_Thinking_Time"]       = USIOption(20, 0, INT_MAX);
     (*this)["Threads"]                     = USIOption(cpuCoreCount(), 1, MaxThreads, onThreads, s);
-    (*this)["PV_Margin"]                   = USIOption(0, 0, 200);
-    (*this)["Max_Depth"]                   = USIOption(0, 0, 200);	//0だとリミットなし
+    (*this)["PV_Margin"]                   = USIOption(200, 0, 1000);
+    (*this)["Max_Depth"]                   = USIOption(0, 0, 200);  //0だとリミットなし
 
 #ifdef NDEBUG
-    (*this)["Engine_Name"]                 = USIOption("Apery");
+    (*this)["Engine_Name"]                 = USIOption("Apery-cus_0.01");
 #else
     (*this)["Engine_Name"]                 = USIOption("Apery Debug Build");
 #endif
