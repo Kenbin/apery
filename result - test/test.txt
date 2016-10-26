@@ -1,0 +1,16 @@
+1コア
+0.1s
+loca-game-serverにて2000局
+先後入れ替え
+技巧定跡あり
+ほかデフォ
+
+■vs gikou.zip
+先:Apery-cus_0.01　後:gikou
+W:1646 L:344 D:10
+
+先:gikou　後:Apery-cus_0.01
+W:355 L:1637 D:8
+
+計:Apery-cus_0.01から見て
+W:3283 L:699 D:18
