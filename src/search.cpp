@@ -143,28 +143,28 @@ namespace {
         {1, 1, 1, 0, 0, 0, 0 ,1},
         {1, 1, 0, 0, 0, 0, 1 ,1},
         {1, 0, 0, 0, 0, 1, 1 ,1},
-		{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 },
-		{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0 },
-		{ 0, 0, 0, 1, 1, 1, 1, 1, 0, 0 },
-		{ 0, 0, 1, 1, 1, 1, 1, 0, 0, 0 },
-		{ 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
-		{ 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
-		{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 1 },
-		{ 1, 1, 1, 0, 0, 0, 0, 0, 1, 1 },
-		{ 1, 1, 0, 0, 0, 0, 0, 1, 1, 1 },
-		{ 1, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-		{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 },
-		{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0 },
-		{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0 },
-		{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
-		{ 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
-		{ 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
-		{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
-		{ 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
-		{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1 },
-		{ 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1 },
-		{ 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-		{ 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 },
+        { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 },
+        { 0, 0, 0, 0, 1, 1, 1, 1, 1, 0 },
+        { 0, 0, 0, 1, 1, 1, 1, 1, 0, 0 },
+        { 0, 0, 1, 1, 1, 1, 1, 0, 0, 0 },
+        { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+        { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+        { 1, 1, 1, 1, 0, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 0, 0, 0, 0, 0, 1, 1 },
+        { 1, 1, 0, 0, 0, 0, 0, 1, 1, 1 },
+        { 1, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+        { 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 },
+        { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0 },
+        { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0 },
+        { 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+        { 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+        { 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+        { 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+        { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1 },
+        { 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1 },
+        { 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+        { 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 },
     };
 
     const size_t HalfDensitySize = std::extent<decltype(HalfDensity)>::value;
@@ -426,7 +426,7 @@ Score Searcher::qsearch(Position& pos, SearchStack* ss, Score alpha, Score beta,
     const CheckInfo ci(pos);
 
     while ((move = mp.nextMove()) != Move::moveNone()) {
-        assert(pos.isOK());
+        //assert(pos.isOK());
 
         givesCheck = pos.moveGivesCheck(move, ci);
 
@@ -472,7 +472,7 @@ Score Searcher::qsearch(Position& pos, SearchStack* ss, Score alpha, Score beta,
                  : -qsearch<NT, false>(pos, ss+1, -beta, -alpha, depth - OnePly));
         pos.undoMove(move);
 
-        assert(-ScoreInfinite < score && score < ScoreInfinite);
+        //assert(-ScoreInfinite < score && score < ScoreInfinite);
 
         if (score > bestScore) {
             bestScore = score;
@@ -508,14 +508,14 @@ Score Searcher::qsearch(Position& pos, SearchStack* ss, Score alpha, Score beta,
 void Thread::search() {
     SearchStack stack[MaxPly+7];
     SearchStack* ss = stack + 5; // To allow referencing (ss-5) and (ss+2)
-    Score bestScore = -ScoreInfinite;
-    Score alpha = -ScoreInfinite;
+    Score bestScore = -ScoreInfinite, alpha = -ScoreInfinite, delta = -ScoreInfinite;
+//    Score alpha = -ScoreInfinite;
     Score beta = ScoreInfinite;
-    Score delta = -ScoreInfinite;
+//    Score delta = -ScoreInfinite;
     Move easyMove = Move::moveNone();
     MainThread* mainThread = (this == searcher->threads.main() ? searcher->threads.main() : nullptr);
     int lastInfoTime = -1; // 将棋所のコンソールが詰まる問題への対処用
-    const int pv_margin = searcher->options["PV_Margin"];	 // PVの出力間隔[ms]
+    const int pv_margin = searcher->options["PV_Margin"];    // PVの出力間隔[ms]
     const bool max_depth = searcher->options["Max_Depth"] ? true : false;
 
     memset(ss-5, 0, 8 * sizeof(SearchStack));
@@ -587,7 +587,7 @@ void Thread::search() {
                     && (bestScore <= alpha || beta <= bestScore)
                     && searcher->timeManager.elapsed() > 3000
                     // 将棋所のコンソールが詰まるのを防ぐ。
-                    && (rootDepth < 10 * OnePly
+                    && (rootDepth < 4 * OnePly
                        || lastInfoTime + pv_margin < searcher->timeManager.elapsed())
                        || rootDepth == searcher->limits.depth
                        || max_depth)
@@ -625,7 +625,7 @@ void Thread::search() {
                          << " time " << searcher->timeManager.elapsed() << SYNCENDL;
             else if ((pvIdx + 1 == multiPV || searcher->timeManager.elapsed() > 3000)
                      // 将棋所のコンソールが詰まるのを防ぐ。
-                     && (rootDepth < 10 * OnePly
+                     && (rootDepth < 4 * OnePly
                          || lastInfoTime + pv_margin < searcher->timeManager.elapsed())
                          || rootDepth == searcher->limits.depth
                          || max_depth)
@@ -815,6 +815,8 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
     ttMove = (RootNode ? thisThread->rootMoves[thisThread->pvIdx].pv[0] :
               ttHit    ? move16toMove(tte->move(), pos) : Move::moveNone());
 
+    const int d_depth = depth / OnePly; // 潔く乱暴にしておく
+
     if (!PVNode
         && ttHit
         && tte->depth() >= depth
@@ -823,14 +825,13 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
     {
         ss->currentMove = ttMove;
         if (ttScore >= beta && ttMove) {
-            const int d = depth / OnePly;
             if (!ttMove.isCaptureOrPawnPromotion()) {
-                const Score bonus = Score(d * d + 2 * d - 2);
+                const Score bonus = Score((d_depth + 2) * d_depth - 2);
                 updateStats(pos, ss, ttMove, nullptr, 0, bonus);
             }
             // Extra penalty for a quiet TT move in previous ply when it gets refuted
             if ((ss-1)->moveCount == 1 && !(ss-1)->currentMove.isCaptureOrPawnPromotion()) {
-                const Score penalty = Score(d * d + 4 * d + 1);
+                const Score penalty = Score((d_depth + 4) * d_depth + 1);
                 const Square prevSq = (ss-1)->currentMove.to();
                 updateCMStats(ss-1, pos.piece(prevSq), prevSq, -penalty);
             }
@@ -881,11 +882,11 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
     if (!PVNode
         && depth < 4 * OnePly
         && ttMove == Move::moveNone()
-        && eval + RazorMargin[depth / OnePly] <= alpha)
+        && eval + RazorMargin[d_depth] <= alpha)
     {
         if (depth <= OnePly)
             return qsearch<NonPV, false>(pos, ss, alpha, beta, Depth0);
-        const Score ralpha = alpha - RazorMargin[depth / OnePly];
+        const Score ralpha = alpha - RazorMargin[d_depth];
         const Score s = qsearch<NonPV, false>(pos, ss, ralpha, ralpha+1, Depth0);
         if (s <= ralpha)
             return s;
@@ -906,70 +907,70 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
 
     if (!PVNode)
     {
-	    if (eval >= beta
-	        && (ss->staticEval >= beta - 35 * (depth / OnePly - 6) || depth >= 13 * OnePly))
-	    {
-	        ss->currentMove = Move::moveNull();
-	        ss->counterMoves = nullptr;
+        if (eval >= beta
+            && (ss->staticEval >= beta - 35 * (d_depth - 6) || depth >= 13 * OnePly))
+        {
+            ss->currentMove = Move::moveNull();
+            ss->counterMoves = nullptr;
 
-	        assert(eval - beta >= 0);
+            assert(eval - beta >= 0);
 
-	        const Depth R = ((823 + 67 * depth / OnePly) / 256 + std::min((eval - beta) / PawnScore, 3)) * OnePly;
+            const Depth R = ((823 + 67 * d_depth) / 256 + std::min((eval - beta) / PawnScore, 3)) * OnePly;
 
-	        pos.doNullMove<true>(st);
-	        (ss+1)->skipEarlyPruning = true;
-	        (ss+1)->staticEvalRaw = (ss)->staticEvalRaw; // 評価値の差分評価の為。
-	        Score nullScore = (depth-R < OnePly ?
-	                           -qsearch<NonPV, false>(pos, ss+1, -beta, -beta+1, Depth0)
-	                           : -search<NonPV>(pos, ss+1, -beta, -beta+1, depth-R, !cutNode));
-	        (ss+1)->skipEarlyPruning = false;
-	        pos.doNullMove<false>(st);
+            pos.doNullMove<true>(st);
+            (ss+1)->skipEarlyPruning = true;
+            (ss+1)->staticEvalRaw = (ss)->staticEvalRaw; // 評価値の差分評価の為。
+            Score nullScore = (depth-R < OnePly ?
+                               -qsearch<NonPV, false>(pos, ss+1, -beta, -beta+1, Depth0)
+                               : -search<NonPV>(pos, ss+1, -beta, -beta+1, depth-R, !cutNode));
+            (ss+1)->skipEarlyPruning = false;
+            pos.doNullMove<false>(st);
 
-	        if (nullScore >= beta) {
-	            if (nullScore >= ScoreMateInMaxPly)
-	                nullScore = beta;
+            if (nullScore >= beta) {
+                if (nullScore >= ScoreMateInMaxPly)
+                    nullScore = beta;
 
-	            if (depth < 12 * OnePly && abs(beta) < ScoreKnownWin)
-	                return nullScore;
+                if (depth < 12 * OnePly && abs(beta) < ScoreKnownWin)
+                    return nullScore;
 
-	            ss->skipEarlyPruning = true;
-	            const Score s = (depth-R < OnePly ?
-	                             qsearch<NonPV, false>(pos, ss, beta-1, beta, Depth0)
-	                             : search<NonPV>(pos, ss, beta-1, beta, depth-R, false));
-	            ss->skipEarlyPruning = false;
+                ss->skipEarlyPruning = true;
+                const Score s = (depth-R < OnePly ?
+                                 qsearch<NonPV, false>(pos, ss, beta-1, beta, Depth0)
+                                 : search<NonPV>(pos, ss, beta-1, beta, depth-R, false));
+                ss->skipEarlyPruning = false;
 
-	            if (s >= beta)
-	                return nullScore;
-	        }
-	    }
+                if (s >= beta)
+                    return nullScore;
+            }
+        }
 
-	    // step9
-	    // probcut
-	    if (depth >= 5 * OnePly
-	        && abs(beta) < ScoreMateInMaxPly)
-	    {
-	        const Score rbeta = std::min(beta + 200, ScoreInfinite);
-	        const Depth rdepth = depth - 4 * OnePly;
+        // step9
+        // probcut
+        if (depth >= 5 * OnePly
+            && abs(beta) < ScoreMateInMaxPly)
+        {
+            const Score rbeta = std::min(beta + 200, ScoreInfinite);
+            const Depth rdepth = depth - 4 * OnePly;
 
-	        assert(rdepth >= OnePly);
-	        assert((ss-1)->currentMove != Move::moveNone());
-	        assert((ss-1)->currentMove != Move::moveNull());
+            assert(rdepth >= OnePly);
+            assert((ss-1)->currentMove != Move::moveNone());
+            assert((ss-1)->currentMove != Move::moveNull());
 
-	        MovePicker mp(pos, ttMove, rbeta - ss->staticEval);
-	        const CheckInfo ci(pos);
-	        while ((move = mp.nextMove()) != Move::moveNone()) {
-	            if (pos.pseudoLegalMoveIsLegal<false, false>(move, ci.pinned)) {
-	                ss->currentMove = move;
-	                ss->counterMoves = &thisThread->counterMoveHistory[pos.movedPiece(move)][move.to()];
-	                pos.doMove(move, st, ci, pos.moveGivesCheck(move, ci));
-	                (ss+1)->staticEvalRaw.p[0][0] = ScoreNotEvaluated;
-	                score = -search<NonPV>(pos, ss+1, -rbeta, -rbeta+1, rdepth, !cutNode);
-	                pos.undoMove(move);
-	                if (score >= rbeta)
-	                    return score;
-	            }
-	        }
-	    }
+            MovePicker mp(pos, ttMove, rbeta - ss->staticEval);
+            const CheckInfo ci(pos);
+            while ((move = mp.nextMove()) != Move::moveNone()) {
+                if (pos.pseudoLegalMoveIsLegal<false, false>(move, ci.pinned)) {
+                    ss->currentMove = move;
+                    ss->counterMoves = &thisThread->counterMoveHistory[pos.movedPiece(move)][move.to()];
+                    pos.doMove(move, st, ci, pos.moveGivesCheck(move, ci));
+                    (ss+1)->staticEvalRaw.p[0][0] = ScoreNotEvaluated;
+                    score = -search<NonPV>(pos, ss+1, -rbeta, -rbeta+1, rdepth, !cutNode);
+                    pos.undoMove(move);
+                    if (score >= rbeta)
+                        return score;
+                }
+            }
+        }
     }
 
     // step10
@@ -1030,7 +1031,7 @@ movesLoop:
         givesCheck = pos.moveGivesCheck(move, ci);
 
         moveCountPruning = (depth < 16 * OnePly
-                            && moveCount >= FutilityMoveCounts[improving][depth / OnePly]);
+                            && moveCount >= FutilityMoveCounts[improving][d_depth]);
         // step12
         if (givesCheck
             && !moveCountPruning
@@ -1045,7 +1046,7 @@ movesLoop:
             && extension == Depth0
             && pos.pseudoLegalMoveIsLegal<false, false>(move, ci.pinned))
         {
-            const Score rBeta = std::max(ttScore - 2 * depth / OnePly, -ScoreMate0Ply);
+            const Score rBeta = std::max(ttScore - 2 * d_depth, -ScoreMate0Ply);
             const Depth d = (depth / (2 * OnePly)) * OnePly;
             ss->excludedMove = move;
             ss->skipEarlyPruning = true;
@@ -1091,7 +1092,7 @@ movesLoop:
                     continue;
             }
             else if (depth < 7 * OnePly
-                     && pos.seeSign(move) < Score(-35 * depth / OnePly * depth / OnePly))
+                     && pos.seeSign(move) < Score(-35 * d_depth * d_depth))
                 continue;
         }
 
@@ -1225,7 +1226,7 @@ movesLoop:
 
         if (!captureOrPawnPromotion && move != bestMove && quietCount < 64)
             quietsSearched[quietCount++] = move;
-    }	//loop
+    }   //loop
 
     //assert(moveCount || !inCheck || excludedMove || !MoveList<Legal>(pos).size());
 
@@ -1233,15 +1234,13 @@ movesLoop:
     if (moveCount == 0)
         bestScore = (excludedMove ? alpha : matedIn(ss->ply));
     else if (bestMove) {
-        const int d = depth / OnePly;
-
         if (!bestMove.isCaptureOrPawnPromotion()) {
-            const Score bonus = Score(d * d + 2 * d - 2);
+            const Score bonus = Score((d_depth + 2) * d_depth - 2);
             updateStats(pos, ss, bestMove, quietsSearched, quietCount, bonus);
         }
 
         if ((ss-1)->moveCount == 1 && (ss-1)->currentMove.isCaptureOrPawnPromotion()) {
-            const Score penalty = Score(d * d + 4 * d + 1);
+            const Score penalty = Score((d_depth + 4) * d_depth + 1);
             const Square prevSq = (ss-1)->currentMove.to();
             updateCMStats(ss-1, pos.piece(prevSq), prevSq, -penalty);
         }
@@ -1250,8 +1249,7 @@ movesLoop:
             && !(ss-1)->currentMove.isCaptureOrPromotion()
             && (ss-1)->currentMove.isOK())
     {
-        const int d = depth / OnePly;
-        const Score bonus = Score(d * d + 2 * d - 2);
+        const Score bonus = Score((d_depth + 2) * d_depth - 2);
         const Square prevSq = (ss-1)->currentMove.to();
         updateCMStats(ss-1, pos.piece(prevSq), prevSq, bonus);
     }
@@ -1321,11 +1319,12 @@ void RootMove::extractPVFromTT(Position& pos) {
 void initSearchTable() {
 
     int improving, d, mc;
+    double r;
 
     for (improving = 0; improving < 2; ++improving) {
         for (d = 1; d < 64; d++) {
             for (mc = 1; mc < 64; mc++) {
-                const double r = log(d) * log(mc) / 2;
+                r = log(d) * log(mc) * 0.5;
                 if (r < 0.80)
                     continue;
 
