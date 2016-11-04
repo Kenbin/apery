@@ -915,7 +915,7 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
 
             assert(eval - beta >= 0);
 
-            const Depth R = ((823 + 67 * d_depth) / 256 + std::min((eval - beta) / PawnScore, 3)) * OnePly;
+            const Depth R = ((67 * d_depth + 823) / 256 + std::min((eval - beta) / PawnScore, 3)) * OnePly;
 
             pos.doNullMove<true>(st);
             (ss+1)->skipEarlyPruning = true;
@@ -1002,7 +1002,7 @@ movesLoop:
                  ||(ss-2)->staticEval == ScoreNone);
 
     singularExtensionNode = (!RootNode
-                             &&  depth >= 8 * OnePly
+                             &&  depth > 7 * OnePly
                              &&  ttMove != Move::moveNone()
                              &&  ttScore != ScoreNone
                              && !excludedMove
@@ -1318,11 +1318,11 @@ void RootMove::extractPVFromTT(Position& pos) {
 
 void initSearchTable() {
 
-    int improving, d, mc;
     double r;
+    int mc;
 
-    for (improving = 0; improving < 2; ++improving) {
-        for (d = 1; d < 64; d++) {
+    for (int improving = 0; improving < 2; ++improving) {
+        for (int d = 1; d < 64; d++) {
             for (mc = 1; mc < 64; mc++) {
                 r = log(d) * log(mc) * 0.5;
                 if (r < 0.80)
@@ -1337,7 +1337,7 @@ void initSearchTable() {
         }
     }
 
-    for (d = 0; d < 16; ++d) {
+    for (int d = 0; d < 16; ++d) {
         FutilityMoveCounts[0][d] = int(2.4 + 0.773 * pow(d + 0.00, 1.8));
         FutilityMoveCounts[1][d] = int(2.9 + 1.045 * pow(d + 0.49, 1.8));
     }
