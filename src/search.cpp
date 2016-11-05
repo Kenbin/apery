@@ -1336,8 +1336,6 @@ void initSearchTable() {
         for (int d = 1; d < 64; d++) {
             for (mc = 1; mc < 64; mc++) {
                 r = log(d) * log(mc) * 0.5;
-                if (r < 0.80)
-                    continue;
 
                 Reductions[NonPV][improving][d][mc] = int(std::round(r));
                 Reductions[PV   ][improving][d][mc] = std::max(Reductions[NonPV][improving][d][mc] - 1, 0);
