@@ -180,11 +180,12 @@ namespace {
                 const int* list1 = pos.plist1();
                 diff.p[1][0] = 0;
                 diff.p[1][1] = 0;
+                int l1;
                 for (int i = 0; i < pos.nlist(); ++i) {
                     const int k1 = list1[i];
                     const auto* pkppw = ppkppw[k1];
                     for (int j = 0; j < i; ++j) {
-                        const int l1 = list1[j];
+                        l1 = list1[j];
                         diff.p[1] += pkppw[l1];
                     }
                     diff.p[2][0] -= Evaluator::KKP[inverse(sq_wk)][inverse(sq_bk)][k1][0];
@@ -204,11 +205,12 @@ namespace {
                 const int* list0 = pos.plist0();
                 diff.p[0][0] = 0;
                 diff.p[0][1] = 0;
+                int l0;
                 for (int i = 0; i < pos.nlist(); ++i) {
                     const int k0 = list0[i];
                     const auto* pkppb = ppkppb[k0];
                     for (int j = 0; j < i; ++j) {
-                        const int l0 = list0[j];
+                        l0 = list0[j];
                         diff.p[0] += pkppb[l0];
                     }
                     diff.p[2] += Evaluator::KKP[sq_bk][sq_wk][k0];
@@ -312,6 +314,9 @@ namespace {
 
         EvalSum sum;
         sum.p[2] = Evaluator::KK[sq_bk][sq_wk];
+
+        int l0, l1;
+
 #if defined USE_AVX2_EVAL || defined USE_SSE_EVAL
         sum.m[0] = _mm_setzero_si128();
         for (int i = 0; i < pos.nlist(); ++i) {
@@ -320,8 +325,8 @@ namespace {
             const auto* pkppb = ppkppb[k0];
             const auto* pkppw = ppkppw[k1];
             for (int j = 0; j < i; ++j) {
-                const int l0 = list0[j];
-                const int l1 = list1[j];
+                l0 = list0[j];
+                l1 = list1[j];
                 __m128i tmp;
                 tmp = _mm_set_epi32(0, 0, *reinterpret_cast<const s32*>(&pkppw[l1][0]), *reinterpret_cast<const s32*>(&pkppb[l0][0]));
                 tmp = _mm_cvtepi16_epi32(tmp);
@@ -342,8 +347,8 @@ namespace {
             const auto* pkppb = ppkppb[k0];
             const auto* pkppw = ppkppw[k1];
             for (int j = 0; j < i; ++j) {
-                const int l0 = list0[j];
-                const int l1 = list1[j];
+                l0 = list0[j];
+                l1 = list1[j];
                 sum.p[0] += pkppb[l0];
                 sum.p[1] += pkppw[l1];
             }
@@ -407,14 +412,15 @@ func(handB, HPawn  , f_hand_pawn  , e_hand_pawn  );
     score.p[0][1] = 0;
     score.p[1][0] = 0;
     score.p[1][1] = 0;
+    int l0, l1;
     for (int i = 0; i < nlist; ++i) {
         const int k0 = list0[i];
         const int k1 = list1[i];
         const auto* pkppb = ppkppb[k0];
         const auto* pkppw = ppkppw[k1];
         for (int j = 0; j < i; ++j) {
-            const int l0 = list0[j];
-            const int l1 = list1[j];
+            l0 = list0[j];
+            l1 = list1[j];
             score.p[0] += pkppb[l0];
             score.p[1] += pkppw[l1];
         }
