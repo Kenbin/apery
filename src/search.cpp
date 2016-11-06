@@ -760,7 +760,6 @@ Score Searcher::search(Position& pos, SearchStack* ss, Score alpha, Score beta, 
     Thread* thisThread = pos.thisThread();
     inCheck = pos.inCheck();
     moveCount = quietCount = ss->moveCount = 0;
-    ss->history = ScoreZero;
     bestScore = -ScoreInfinite;
     ss->ply = (ss-1)->ply + 1;
 
@@ -1124,34 +1123,24 @@ movesLoop:
             if (captureOrPawnPromotion)
                 r -= (r ? OnePly : Depth0);
             else {
-                // Increase reduction for cut nodes
                 if (cutNode)
                     r += 2 * OnePly;
-                // Decrease reduction for moves that escape a capture. Filter out
-                // castling moves, because they are coded as "king captures rook" and
-                // hence break make_move(). Also use see() instead of see_sign(),
-                // because the destination square is empty.
+#if 0
                 else if (!move.isDrop()
                          && pieceToPieceType(pos.piece(move.to())) != Pawn
                          && pos.seeSign(makeMove(pieceToPieceType(pos.piece(move.to())), move.to(), move.from())) < ScoreZero)
+                {
                     r -= 2 * OnePly;
+                }
+#endif
 
-                ss->history = thisThread->history[movedPiece][move.to()]
+                const Score val = thisThread->history[movedPiece][move.to()]
                     +    (cmh  ? (*cmh )[movedPiece][move.to()] : ScoreZero)
                     +    (fmh  ? (*fmh )[movedPiece][move.to()] : ScoreZero)
                     +    (fmh2 ? (*fmh2)[movedPiece][move.to()] : ScoreZero)
-                    +    thisThread->fromTo.get(oppositeColor(pos.turn()), move)
-                    -    8000; // Correction factor;
-
-                // Decrease/increase reduction by comparing opponent's stat score
-                if (ss->history > ScoreZero && (ss-1)->history < ScoreZero)
-                    r -= OnePly;
-
-                else if (ss->history < ScoreZero && (ss-1)->history > ScoreZero)
-                    r += OnePly;
-
-                // Decrease/increase reduction for moves with a good/bad history
-                r = std::max(Depth0, (r / OnePly - ss->history / 20000) * OnePly);
+                    +    thisThread->fromTo.get(oppositeColor(pos.turn()), move);
+                const int rHist = (val - 8000) / 20000;
+                r = std::max(Depth0, (r / OnePly - rHist) * OnePly);
             }
 
             const Depth d = std::max(newDepth - r, OnePly);

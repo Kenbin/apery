@@ -38,7 +38,6 @@ struct SearchStack {
     Move excludedMove;
     Move killers[2];
     Score staticEval;
-    Score history;
     bool skipEarlyPruning;
     int moveCount;
     CounterMoveStats* counterMoves;
