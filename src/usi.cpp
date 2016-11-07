@@ -112,7 +112,7 @@ void OptionsMap::init(Searcher* s) {
     (*this)["Max_Depth"]                   = USIOption(0, 0, 200);  //0だとリミットなし
 
 #ifdef NDEBUG
-    (*this)["Engine_Name"]                 = USIOption("Apery-cus_0.01");
+    (*this)["Engine_Name"]                 = USIOption("Apery-cus_0.02");
 #else
     (*this)["Engine_Name"]                 = USIOption("Apery Debug Build");
 #endif
